@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xct:Expander xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:Class="ERSA.Mobile.Definitions.Controls.LicenseListItem"
+              BackgroundColor="#1666"
+              Margin="5,2">
+    <xct:Expander.Header>
+        <Frame  CornerRadius="5" HasShadow="True"  Margin="5,2,5,0" BackgroundColor="#1666" >
+            <Label x:Name="LicenseHeader"/>
+        </Frame>
+    </xct:Expander.Header>
+    
+    <xct:Expander.Content>
+        <Frame  CornerRadius="5" HasShadow="True"  Margin="5,0,5,8" BackgroundColor="#1666" >
+            <Label x:Name="LicenseText"/>
+        </Frame>
+    </xct:Expander.Content>
+</xct:Expander>

@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:models="clr-namespace:ERSA.Mobile.Views.Models" 
+             x:DataType="models:LinkPageViewModel"
+             x:Class="ERSA.Mobile.Views.LinkPage">
+    <Shell.TitleView>
+        <Grid BackgroundColor="{StaticResource HeaderBarBackgroundColorLight}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+
+            </Grid.ColumnDefinitions>
+            <Label Text="Edytuj link" HorizontalOptions="Start" FontSize="20" VerticalOptions="Center"/>
+        </Grid>
+    </Shell.TitleView>
+    <ScrollView >
+        <Grid Margin="10"
+              WidthRequest="400"
+              HorizontalOptions="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            
+            
+            <Label Text="ID Linku"/>
+            <Label Text="{Binding LinkID}"
+                   Grid.Column="1"
+                   FontSize="20"/>
+
+            <Label Text="Ścieżka"
+                   Grid.Row="1"/>
+            <Entry Text="{Binding LinkPath}"
+                   Grid.Column="1"
+                   Grid.Row="1"/>
+
+            <Label Text="Adres docelowy"
+                   Grid.Row="2"/>
+            <Entry Text="{Binding LinkTarget}"
+                   Grid.Column="1"
+                   Grid.Row="2"/>
+            
+            <Label Text="Ukryj"
+                   Grid.Row="3"/>
+            <Switch IsToggled="{Binding HideLink}"
+                    Grid.Row="3"
+                    Grid.Column="1"/>
+
+            <xct:Expander Grid.Row="4" Grid.ColumnSpan="2">
+                <xct:Expander.Header>
+                    <Frame  CornerRadius="5" HasShadow="True"  Margin="5,2,5,0" BackgroundColor="#1666" >
+                        <Label Text="Tagi OpenGraph"/>
+                    </Frame>
+                </xct:Expander.Header>
+                <xct:Expander.Content>
+                    <Frame  CornerRadius="5" HasShadow="True"  Margin="5,2,5,0" BackgroundColor="#1666" >
+                        <StackLayout />
+                    </Frame>
+                </xct:Expander.Content>
+            </xct:Expander>
+        </Grid>
+    </ScrollView>
+    
+</ContentPage>

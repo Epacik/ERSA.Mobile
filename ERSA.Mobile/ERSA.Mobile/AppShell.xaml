@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms" 
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:ERSA.Mobile"
+       xmlns:views="clr-namespace:ERSA.Mobile.Views"
+       FlyoutIsPresented="False"
+       x:Class="ERSA.Mobile.AppShell">
+
+    <TabBar >
+
+        <Tab Title="Linki" Route="Links" >
+            <ShellContent ContentTemplate="{DataTemplate views:MainPage}" Route="MainPage"/>
+
+        </Tab>
+        <Tab Title="Informacje" Route="Informations"> 
+            <ShellContent Title="Informacje ogólne" ContentTemplate="{DataTemplate views:AboutPage}" Route="About"/>
+            <ShellContent Title="Licencje" ContentTemplate="{DataTemplate views:LicencesPage}"/>
+        </Tab>
+    </TabBar>
+    <TabBar Title="Edytuj link">
+        <ShellContent Title="Edytuj link" FlyoutItemIsVisible="False" ContentTemplate="{DataTemplate views:LinkPage}" Route="EditLink" />
+    </TabBar>
+</Shell>

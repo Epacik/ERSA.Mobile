@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ERSA.Mobile.Definitions.Controls.LinkListItem" 
+             >
+  <ContentView.Content>
+        <Frame  CornerRadius="5" HasShadow="True"  Margin="5,2" BackgroundColor="#1666" >
+            <StackLayout BackgroundColor="#0000">
+                <Label x:Name="Path" FontSize="20" Font="Bold" Text="Hello Xamarin.Forms!" />
+                <Label x:Name="Target" Text="Hello Xamarin.Forms!" />
+            </StackLayout>
+        </Frame>
+  </ContentView.Content>
+</ContentView>
