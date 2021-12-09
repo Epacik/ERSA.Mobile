@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ERSA.Mobile.AdminApi;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -12,7 +9,7 @@ namespace ERSA.Mobile.Definitions.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LinkListItem : ContentView
     {
-        public LinkListItem(AdminApiClient.Link link)
+        public LinkListItem(Link link)
         {
             Link = link;
             InitializeComponent();
@@ -26,7 +23,7 @@ namespace ERSA.Mobile.Definitions.Controls
             click.Command = new Command(OnClicked);
             this.GestureRecognizers.Add(click);
         }
-        public AdminApiClient.Link Link { get; }
+        public Link Link { get; }
 
         public event EventHandler Clicked;
 

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ERSA.Mobile.AdminApi.Definitions
+namespace ERSA.Mobile.AdminApi
 {
     public struct OpengraphTag
     {

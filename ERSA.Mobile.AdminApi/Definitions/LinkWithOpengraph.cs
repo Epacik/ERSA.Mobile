@@ -17,7 +17,10 @@ namespace ERSA.Mobile.AdminApi
         public string Target { get; set; }
 
         [JsonProperty("hide_target")]
-        public int HideTarget { get; set; }
+        private int _hideTarget { get; set; }
+
+        [JsonIgnore]
+        public bool HideTarget { get => _hideTarget == 1; set => _hideTarget = value ? 1 : 0; }
 
         [JsonProperty("opengraph_tags")]
         public OpengraphTag[] OpengraphTags { get; set; }

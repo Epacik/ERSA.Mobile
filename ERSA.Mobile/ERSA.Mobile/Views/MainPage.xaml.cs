@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using ERSA.Mobile.AdminApi;
+using RestSharp;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,13 +31,13 @@ namespace ERSA.Mobile.Views
                 await AskForNewToken();
             }
 
-            var api = new Tools.AdminApiClient(Preferences.Get(Constants.Preferences.ApiToken, null));
+            var api = new AdminApi.Client(Preferences.Get(Constants.Preferences.ApiToken, null));
              
-            if (!await api.TestConnection())
+            if (!await api.TestConnectionAsync())
             {
                 await AskForNewToken();
-                api = new Tools.AdminApiClient(Preferences.Get(Constants.Preferences.ApiToken, null));
-                if (!await api.TestConnection())
+                api = new AdminApi.Client(Preferences.Get(Constants.Preferences.ApiToken, null));
+                if (!await api.TestConnectionAsync())
                     throw new InvalidOperationException();
             }
             preparingApi = false;
@@ -72,13 +73,13 @@ namespace ERSA.Mobile.Views
 
             new Task(async () =>
             {
-                var api = new Tools.AdminApiClient();
-                var data = await api.ListLinks(searchString).ConfigureAwait(false);
+                var api = new AdminApi.Client();
+                var data = await api.ListLinksAsync(searchString).ConfigureAwait(false);
                 if (data != null)
                     Dispatcher.BeginInvokeOnMainThread(() =>
                     {
                         Items.Children.Clear();
-                        foreach(Definitions.AdminApiClient.Link link in data)
+                        foreach(Link link in data)
                         {
                             var item = new Definitions.Controls.LinkListItem(link);
                             item.Clicked += Item_Clicked;

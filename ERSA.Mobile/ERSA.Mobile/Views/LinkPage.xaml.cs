@@ -57,8 +57,7 @@ namespace ERSA.Mobile.Views
             Console.WriteLine(LinkId);
             var api = new AdminApi.Client();
 
-            var linkData = await api.GetLinkData(LinkId.ToString());
-            var opengraphTags = await api.GetOpenGraphTags(LinkId);
+            var linkData = await api.GetLinkDataAsync(LinkId.ToString());
 
             if(linkData is null)
             {
@@ -71,9 +70,8 @@ namespace ERSA.Mobile.Views
                 model.LinkID = (int)linkData.Id;
                 model.LinkPath = linkData.Path;
                 model.LinkTarget = linkData.Target;
-                model.HideLink = linkData.HideTarget == 1;
-
-
+                model.HideLink = linkData.HideTarget;
+                
             });
         }
 
