@@ -108,11 +108,19 @@ namespace ERSA.Mobile.AdminApi
                 return new Result(response.StatusCode == System.Net.HttpStatusCode.OK, response.Content);
             }).ConfigureAwait(false);
 
+        /// <summary>
+        /// Remove a link using an ID or a path
+        /// </summary>
+        /// <param name="idOrPath">ID or path</param>
+        /// <returns>Result of removing</returns>
         public async Task<Result> RemoveLinkAsync(string idOrPath) =>
             await Exceptions.LogAndCatchAsync(async () =>
            {
-               await Task.Yield();
-               return new Result();
+               var request = new RestRequest($"/api/v1/remove_link/{idOrPath}", DataFormat.Json);
+
+               var response = await client.ExecuteAsync(request, Method.DELETE).ConfigureAwait(false);
+
+               return new Result(response.StatusCode == System.Net.HttpStatusCode.OK, response.Content);
            });
 
         /// <summary>

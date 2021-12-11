@@ -1,11 +1,12 @@
 ﻿open System;
 open Microsoft.FSharp.Collections
+open ERSA.Mobile.AdminApi
 
 // let's get a key from env var
 let key = System.Environment.GetEnvironmentVariable("ERSA_API_KEY", System.EnvironmentVariableTarget.User)
 
 // init api client
-let api = ERSA.Mobile.AdminApi.Client(key)
+let api = Client(key)
 
 //get list of links 
 let links = api.ListLinksAsync() |> Async.AwaitTask |> Async.RunSynchronously
@@ -14,6 +15,7 @@ let links = api.ListLinksAsync() |> Async.AwaitTask |> Async.RunSynchronously
 let printLink (link: ERSA.Mobile.AdminApi.Link) = printfn $"Path: {link.Path}\nTarget {link.Target}\n";
 let printLinkWO (link: ERSA.Mobile.AdminApi.LinkWithOpengraph) = printfn $"Path: {link.Path}\nTarget {link.Target}\n";
 let printOpenGraph (og: ERSA.Mobile.AdminApi.OpengraphTag) = printfn $"Tag: {og.Tag}, Content: {og.Content}"
+
 
 // print all of links
 for index in 0 .. links.Length - 1 do
@@ -42,7 +44,7 @@ done
 let random = Random();
 
 // create a link with a random path
-let link = ERSA.Mobile.AdminApi.LinkToAdd.op_Explicit struct ($"test{random.NextInt64 (420, 666)}", "https://www.youtube.com/", false)
+let link = LinkToAdd.op_Explicit struct ($"test{random.NextInt64 (420, 666)}", "https://www.youtube.com/", false)
 
 // try to add a new link
 let mutable result = api.AddLinkAsync link |> Async.AwaitTask |> Async.RunSynchronously
@@ -55,7 +57,7 @@ printfn "\nlast link"
 printLink lastLink
 
 // create a link to update
-let linkToUpdate = ERSA.Mobile.AdminApi.Link.op_Explicit struct (lastLink.Id, lastLink.Path, lastLink.Target + "_UPDATED", not lastLink.HideTarget)
+let linkToUpdate = Link.op_Explicit struct (lastLink.Id, lastLink.Path, lastLink.Target + "_UPDATED", not lastLink.HideTarget)
 
 // try to update link
 result <- api.UpdateLinkAsync linkToUpdate |> Async.AwaitTask |> Async.RunSynchronously
@@ -65,3 +67,6 @@ printf $"was link updated: {result.Success}; message: {result.Message}"
 let updatedLink = api.GetLinkDataAsync (lastLink.Id.ToString()) |> Async.AwaitTask |> Async.RunSynchronously
 printLinkWO updatedLink
 
+//try to remove that link
+result <- api.RemoveLinkAsync(lastLink.Id.ToString()) |> Async.AwaitTask |> Async.RunSynchronously
+printf $"was link removed: {result.Success}; message: {result.Message}"
