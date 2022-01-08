@@ -1,0 +1,17 @@
+﻿<Window x:Class="ERSA.Wpf.TokenPrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ERSA.Wpf"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        Title="Podaj token API" Height="90" Width="300">
+    <StackPanel Margin="10">
+        <PasswordBox x:Name="TokenBox" Margin="0,5"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button IsCancel="True" Margin="5,0" Content="Anuluj"/>
+            <Button Click="Button_Click" Content="Zapisz"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

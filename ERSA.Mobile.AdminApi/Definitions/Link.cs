@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace ERSA.Mobile.AdminApi
 {
@@ -32,6 +33,13 @@ namespace ERSA.Mobile.AdminApi
 
     public struct LinkToAdd
     {
+        public LinkToAdd(string path, string target, bool hideTarget) : this()
+        {
+            Path = path ?? throw new ArgumentNullException(nameof(path));
+            Target = target ?? throw new ArgumentNullException(nameof(target));
+            HideTarget = hideTarget;
+        }
+
         [JsonProperty("path")]
         public string Path { get; set; }
 

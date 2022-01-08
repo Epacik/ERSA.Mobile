@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 
@@ -42,6 +42,26 @@ namespace ERSA.Mobile.AdminApi
         }
 
         /// <summary>
+        /// ExecuteAsync in RestClient doesn't throw exceptions, so I'm doing it manually
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="httpMethod"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="System.Net.Http.HttpRequestException"></exception>
+        private async Task<IRestResponse> ExecuteAsync(IRestRequest request, Method httpMethod, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var response = await client.ExecuteAsync(request, httpMethod, cancellationToken);
+
+            if (response.StatusCode == 0)
+            {
+                throw new System.Net.Http.HttpRequestException(response.ErrorMessage, response.ErrorException);
+            }
+
+            return response;
+        }
+
+        /// <summary>
         /// Test if server can be reached
         /// </summary>
         /// <returns>Whether the connection was successful</returns>
@@ -57,7 +77,7 @@ namespace ERSA.Mobile.AdminApi
             request.XmlSerializer = null;
             request.JsonSerializer = null;
 
-            var response = await client.ExecuteGetAsync(request).ConfigureAwait(false);
+            var response = await ExecuteAsync(request, Method.GET).ConfigureAwait(false);
 
             if (response is null) return false;
 
@@ -74,9 +94,12 @@ namespace ERSA.Mobile.AdminApi
             {
                 var request = new RestRequest("/api/v1/add_link", DataFormat.Json);
                 request.AddJsonBody(linkToAdd);
-                var response = await client.ExecuteAsync(request, Method.PUT).ConfigureAwait(false);
+                var response = await ExecuteAsync(request, Method.PUT).ConfigureAwait(false);
                 return new Result(response.StatusCode == System.Net.HttpStatusCode.Created, response.Content);
             }).ConfigureAwait(false);
+
+        public async Task<LinkWithOpengraph> GetLinkDataAsync(int id) =>
+            await GetLinkDataAsync(id.ToString()).ConfigureAwait(false);
 
         /// <summary>
         /// Get Link data with OpenGraph Tags
@@ -89,7 +112,7 @@ namespace ERSA.Mobile.AdminApi
                 var request = new RestRequest($"/api/v1/get_link/{idOrPath}", DataFormat.Json);
                 //request.JsonSerializer = new RestSharp.Serializers.NewtonsoftJson.JsonNetSerializer();
 
-                var response = await client.ExecuteGetAsync(request).ConfigureAwait(false);
+                var response = await ExecuteAsync(request, Method.GET).ConfigureAwait(false);
 
                 return JsonConvert.DeserializeObject<LinkWithOpengraph>(response.Content);
             }).ConfigureAwait(false);
@@ -104,9 +127,16 @@ namespace ERSA.Mobile.AdminApi
             {
                 var request = new RestRequest("/api/v1/update_link", DataFormat.Json);
                 request.AddJsonBody(linkToAdd);
-                var response = await client.ExecuteAsync(request, Method.PATCH).ConfigureAwait(false);
+                var response = await ExecuteAsync(request, Method.PATCH).ConfigureAwait(false);
                 return new Result(response.StatusCode == System.Net.HttpStatusCode.OK, response.Content);
             }).ConfigureAwait(false);
+
+        /// <summary>
+        /// Remove a link using an ID
+        /// </summary>
+        /// <param name="id">ID of link</param>
+        /// <returns>Result of removing</returns>
+        public async Task<Result> RemoveLinkAsync(int id) => await RemoveLinkAsync(id.ToString());
 
         /// <summary>
         /// Remove a link using an ID or a path
@@ -118,7 +148,7 @@ namespace ERSA.Mobile.AdminApi
            {
                var request = new RestRequest($"/api/v1/remove_link/{idOrPath}", DataFormat.Json);
 
-               var response = await client.ExecuteAsync(request, Method.DELETE).ConfigureAwait(false);
+               var response = await ExecuteAsync(request, Method.DELETE).ConfigureAwait(false);
 
                return new Result(response.StatusCode == System.Net.HttpStatusCode.OK, response.Content);
            }).ConfigureAwait(false);
@@ -133,7 +163,7 @@ namespace ERSA.Mobile.AdminApi
             {
                 var request = new RestRequest("/api/v1/add_opengraph_tag", DataFormat.Json).AddJsonBody(tagToAdd);
 
-                var response = await client.ExecuteAsync(request, Method.PUT).ConfigureAwait(false);
+                var response = await ExecuteAsync(request, Method.PUT).ConfigureAwait(false);
 
                 return new Result(response.StatusCode == System.Net.HttpStatusCode.OK, response.Content);
 
@@ -150,7 +180,7 @@ namespace ERSA.Mobile.AdminApi
             var request = new RestRequest($"/api/v1/get_opengraph_tag/{tagId}", DataFormat.Json);
             //request.JsonSerializer = new RestSharp.Serializers.NewtonsoftJson.JsonNetSerializer();
 
-            var response = await client.ExecuteGetAsync(request).ConfigureAwait(false);
+            var response = await ExecuteAsync(request, Method.GET).ConfigureAwait(false);
 
             return JsonConvert.DeserializeObject<OpengraphTag>(response.Content);
         }).ConfigureAwait(false);
@@ -164,19 +194,23 @@ namespace ERSA.Mobile.AdminApi
             await Exceptions.LogAndThrowAsync(async () => {
                 var request = new RestRequest("/api/v1/update_opengraph_tag").AddJsonBody(tagToUpdate);
 
-                var response = await client.ExecuteAsync(request, Method.PATCH).ConfigureAwait(false);
+                var response = await ExecuteAsync(request, Method.PATCH).ConfigureAwait(false);
 
                 return new Result(response.StatusCode == System.Net.HttpStatusCode.OK, response.Content);
                 }).ConfigureAwait(false);
 
+        /// <summary>
+        /// Remove an OpenGraph tag with a specified ID
+        /// </summary>
+        /// <param name="tagId"></param>
+        /// <returns></returns>
         public async Task<Result> RemoveOpenGraphTagAsync(int tagId) =>
             await Exceptions.LogAndThrowAsync<Result>(async () =>
             {
                 var request = new RestRequest($"/api/v1/remove_opengraph_tag/{tagId}", DataFormat.Json);
-                var response = await client.ExecuteAsync(request, Method.DELETE).ConfigureAwait(false);
+                var response = await ExecuteAsync(request, Method.DELETE).ConfigureAwait(false);
                 return new Result(response.StatusCode == System.Net.HttpStatusCode.OK, response.Content);
             }).ConfigureAwait(false);
-
 
         /// <summary>
         /// Get a list of link redirects on the server
@@ -189,7 +223,7 @@ namespace ERSA.Mobile.AdminApi
                 var request = new RestRequest($"/api/v1/list_links/{searchString}", DataFormat.Json);
                 //request.JsonSerializer = new RestSharp.Serializers.NewtonsoftJson.JsonNetSerializer();
 
-                var response = await client.ExecuteGetAsync(request).ConfigureAwait(false);
+                var response = await ExecuteAsync(request, Method.GET).ConfigureAwait(false);
 
                 return JsonConvert.DeserializeObject<Link[]>(response.Content);
             }).ConfigureAwait(false);

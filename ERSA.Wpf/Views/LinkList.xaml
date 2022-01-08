@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="ERSA.Wpf.Views.LinkList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ERSA.Wpf.Views" 
+             xmlns:admin="clr-namespace:ERSA.Mobile.AdminApi;assembly=ERSA.Mobile.AdminApi"
+             xmlns:models="clr-namespace:ERSA.Wpf.Views.Models" d:DataContext="{d:DesignInstance Type=models:LinkListViewModel}"
+             
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="AddNewButton" Click="AddNewButton_Click" Margin="5" Padding="5">Dodaj nowy</Button>
+            <Button x:Name="EditButton" Click="EditButton_Click" Margin="0,5" Padding="5">Edytuj</Button>
+            <Button x:Name="RemoveButton" Click="RemoveButton_Click" Margin="5" Padding="5">Usuń</Button>
+            <Button x:Name="RefreshButton" Click="RefreshButton_Click" Margin="0,5" Padding="5">Odśwież</Button>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Text="Search" VerticalAlignment="Center"/>
+            <TextBox Margin="5" Text="{Binding SearchString}" Width="150" VerticalContentAlignment="Center" TextChanged="TextBox_TextChanged" />
+        </StackPanel>
+
+        <ListView x:Name="Links"
+                  SelectedItem="{Binding SelectedLink}"
+                  Grid.Row="1"
+                  ItemsSource="{Binding Links}"
+                  ScrollViewer.CanContentScroll="False"
+                  d:ItemsSource="{d:SampleData ItemCount=5}"
+                  SelectionMode="Single"
+                  BorderThickness="0,0,0,0"
+                  HorizontalContentAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="admin:Link">
+                    <Border BorderBrush="LightBlue" BorderThickness="1" HorizontalAlignment="Stretch" CornerRadius="5" Padding="5">
+                        <StackPanel  AutomationProperties.Name="{Binding Path}" HorizontalAlignment="Stretch">
+                            <TextBlock FontSize="15" Text="{Binding Path}"/>
+                            <TextBlock Text="{Binding Target}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+    </Grid>
+</UserControl>
