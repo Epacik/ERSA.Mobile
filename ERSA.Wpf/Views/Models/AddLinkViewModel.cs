@@ -26,5 +26,13 @@ namespace ERSA.Wpf.Views.Models
         private ObservableCollection<OpengraphTag> tags = new ObservableCollection<OpengraphTag>();
 
         public ObservableCollection<OpengraphTag> Tags { get => tags; set => SetProperty(ref tags, value); }
+
+        internal void Clear()
+        {
+            LinkPath = null; 
+            LinkTarget = null;
+            LinkHidden = false;
+            Tags.Clear();
+        }
     }
 }

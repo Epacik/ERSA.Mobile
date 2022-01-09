@@ -12,4 +12,8 @@
     <ProjectReference Include="..\ERSA.Mobile.Shared\ERSA.Mobile.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

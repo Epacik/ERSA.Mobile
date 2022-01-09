@@ -158,7 +158,7 @@ namespace ERSA.Mobile.AdminApi
         /// </summary>
         /// <param name="tagToAdd"></param>
         /// <returns></returns>
-        public async Task<Result> AddOpenGraphTagAsync(OpengraphTag tagToAdd) =>
+        public async Task<Result> AddOpenGraphTagAsync(OpengraphTagToAdd tagToAdd) =>
             await Exceptions.LogAndThrowAsync(async () =>
             {
                 var request = new RestRequest("/api/v1/add_opengraph_tag", DataFormat.Json).AddJsonBody(tagToAdd);

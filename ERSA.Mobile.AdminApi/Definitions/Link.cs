@@ -5,6 +5,14 @@ namespace ERSA.Mobile.AdminApi
 {
     public struct Link
     {
+        public Link(int? id, string path, string target, bool hideTarget) : this()
+        {
+            Id = id;
+            Path = path;
+            Target = target;
+            HideTarget = hideTarget;
+        }
+
         [JsonProperty("lnk_id")]
         public int? Id { get; set; }
 

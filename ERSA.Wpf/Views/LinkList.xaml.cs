@@ -12,10 +12,10 @@ namespace ERSA.Wpf.Views
     /// </summary>
     public partial class LinkList : UserControl
     {
-        private readonly Models.LinkListViewModel model = new();
+        private readonly Models.LinkListViewModel viewModel = new();
         public LinkList()
         {
-            DataContext = model;
+            DataContext = viewModel;
             InitializeComponent();
             var key = ((App)Application.Current).ApiKey;
             client = new Client(key);
@@ -27,7 +27,7 @@ namespace ERSA.Wpf.Views
 
         public async Task Reload()
         {
-            await LoadLinks(model.SearchString).ConfigureAwait(false);
+            await LoadLinks(viewModel.SearchString).ConfigureAwait(false);
         }
 
         private async Task LoadLinks(string? searchString = null)
@@ -35,10 +35,10 @@ namespace ERSA.Wpf.Views
             var links = await client.ListLinksAsync(searchString ?? "");
             Dispatcher.Invoke(() =>
             {
-                model.Links.Clear();
+                viewModel.Links.Clear();
                 foreach (Link link in links.OrderBy(l => l.Path))
                 {
-                    model.Links.Add(link);
+                    viewModel.Links.Add(link);
                 }
             });
         }
@@ -52,41 +52,41 @@ namespace ERSA.Wpf.Views
 
         private async void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            if( model.SelectedLink is null ||
-                model.SelectedLink?.Id is null ||
+            if( viewModel.SelectedLink is null ||
+                viewModel.SelectedLink?.Id is null ||
                 MessageBox.Show("Czy na pewno chcesz usunąć ten link?", "Usuń link", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.No)
             {
                 return;
             }
 
-            var link = (Link)model.SelectedLink;
+            var link = (Link)viewModel.SelectedLink;
 
             await client.RemoveLinkAsync((int)link.Id);
 
-            await LoadLinks(model.SearchString).ConfigureAwait(false);
+            await LoadLinks(viewModel.SearchString).ConfigureAwait(false);
         }
 
         private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         { 
-            await LoadLinks(model.SearchString).ConfigureAwait(false);
+            await LoadLinks(viewModel.SearchString).ConfigureAwait(false);
         }
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            await LoadLinks(model.SearchString).ConfigureAwait(false);
+            await LoadLinks(viewModel.SearchString).ConfigureAwait(false);
         }
 
         public event EventHandler<EdidButtonEventArgs> EditLink;
 
         private async void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            if (model.SelectedLink is null ||
-                model.SelectedLink?.Id is null)
+            if (viewModel.SelectedLink is null ||
+                viewModel.SelectedLink?.Id is null)
             {
                 return;
             }
 
-            var link = await client.GetLinkDataAsync(model?.SelectedLink?.Id ?? -1);
+            var link = await client.GetLinkDataAsync(viewModel?.SelectedLink?.Id ?? -1);
 
             EditLink?.Invoke(this, new EdidButtonEventArgs(link));
         }

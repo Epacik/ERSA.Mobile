@@ -29,7 +29,7 @@ namespace ERSA.Wpf
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
             field = value;
-            PropertyHasChanged(propertyName);
+            PropertyHasChanged(propertyName ?? throw new ArgumentNullException(nameof(propertyName)));
 
             return true;
         }

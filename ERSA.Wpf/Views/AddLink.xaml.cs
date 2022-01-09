@@ -20,10 +20,10 @@ namespace ERSA.Wpf.Views
     /// </summary>
     public partial class AddLink : UserControl
     {
-        Models.AddLinkViewModel model = new Models.AddLinkViewModel();
+        Models.AddLinkViewModel viewModel = new Models.AddLinkViewModel();
         public AddLink()
         {
-            DataContext = model;
+            DataContext = viewModel;
             InitializeComponent();
         }
 
@@ -35,17 +35,18 @@ namespace ERSA.Wpf.Views
             {
 
                 AddingCancelled?.Invoke(this, EventArgs.Empty);
+                viewModel.Clear();
             }
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrWhiteSpace(model.LinkPath) || string.IsNullOrWhiteSpace(model.LinkTarget))
+            if(string.IsNullOrWhiteSpace(viewModel.LinkPath) || string.IsNullOrWhiteSpace(viewModel.LinkTarget))
             {
                 return;
             }
             var client = new Mobile.AdminApi.Client(((App)Application.Current).ApiKey);
-            var response = await client.AddLinkAsync(new Mobile.AdminApi.LinkToAdd(model.LinkPath, model.LinkTarget, model.LinkHidden == true)).ConfigureAwait(false);
+            var response = await client.AddLinkAsync(new Mobile.AdminApi.LinkToAdd(viewModel.LinkPath, viewModel.LinkTarget, viewModel.LinkHidden == true)).ConfigureAwait(false);
 
             if (!response.Success)
             {
@@ -54,6 +55,7 @@ namespace ERSA.Wpf.Views
             }
 
             AddingCompleted?.Invoke(this, EventArgs.Empty);
+            viewModel.Clear();
         }
     }
 }

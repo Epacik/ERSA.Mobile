@@ -9,7 +9,16 @@
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <views:LinkList x:Name="Links" AddNewLink="Links_AddNewLink" EditLink="Links_EditLink"/>
-        <views:AddLink x:Name="AddLink" AddingCancelled="AddLink_AddingCancelled" AddingCompleted="AddLink_AddingCompleted" Visibility="Collapsed"/>
+        <views:LinkList x:Name="Links"
+                        AddNewLink="Links_AddNewLink"
+                        EditLink="Links_EditLink"/>
+        <views:AddLink x:Name="AddLink"
+                       AddingCancelled="AddLink_AddingCancelled"
+                       AddingCompleted="AddLink_AddingCompleted"
+                       Visibility="Collapsed"/>
+        <views:EditLink x:Name="EditLink"
+                        Visibility="Collapsed"
+                        Saved="EditLink_Saved"
+                        Cancelled="EditLink_Cancelled"/>
     </Grid>
 </Window>
