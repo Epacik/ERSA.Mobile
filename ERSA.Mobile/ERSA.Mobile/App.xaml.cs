@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using ERSA.Mobile.Views;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,9 +14,9 @@ namespace ERSA.Mobile
         public App()
         {
             InitializeComponent();
-            
-            MainPage = new AppShell();//new NavigationPage(new MainPage());
-            ((AppShell)MainPage).Navigating += App_Navigating;
+
+            MainPage = new MainPage();//new AppShell();//new NavigationPage(new MainPage());
+            //((AppShell)MainPage).Navigating += App_Navigating;
             //((AppShell)MainPage).
         }
 

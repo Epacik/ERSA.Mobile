@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:ERSA.Mobile.Views.Models"
+             xmlns:admin="clr-namespace:ERSA.Mobile.AdminApi;assembly=ERSA.Mobile.AdminApi"
+             x:DataType="models:LinkListViewModel"
+             x:Class="ERSA.Mobile.Views.LinkList">
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Frame Grid.Row="0" Padding="2" BackgroundColor="Transparent" HasShadow="True"  >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="400"/>
+                </Grid.ColumnDefinitions>
+                <SearchBar Grid.Column="1" x:Name="SearchInput" Unfocused="SearchInput_Unfocused" SearchButtonPressed="SearchInput_SearchButtonPressed"  />
+            </Grid>
+        </Frame>
+
+
+        <RefreshView x:Name="RefreshView" Grid.Row="1" Refreshing="RefreshView_Refreshing" >
+            <ListView x:Name="Items" ItemsSource="{Binding Links}" SelectionMode="Single" SelectedItem="{Binding SelectedLink}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell x:DataType="admin:Link">
+                            <Frame Margin="5" HasShadow="True" CornerRadius="5" Padding="5" BackgroundColor="Transparent">
+                                <StackLayout AutomationProperties.Name="{Binding Path}" HorizontalOptions="StartAndExpand">
+                                    <Label FontSize="15" Text="{Binding Path}"/>
+                                    <Label Text="{Binding Target}"/>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </RefreshView>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Text="Dodaj" x:Name="AddButton" Clicked="AddButton_Clicked"/>
+            <Button Grid.Column="1" Text="Edytuj" x:Name="EditButton" Clicked="EditButton_Clicked"/>
+            <Button Grid.Column="2" Text="Usuń" x:Name="RemoveButton" Clicked="RemoveButton_Clicked"/>
+        </Grid>
+
+    </Grid>
+</ContentView>

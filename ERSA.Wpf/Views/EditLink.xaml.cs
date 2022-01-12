@@ -43,18 +43,18 @@ namespace ERSA.Wpf.Views
             var client = new Client(((App)Application.Current).ApiKey);
             var response = await client.UpdateLinkAsync(new Link(viewModel.LinkId, viewModel.LinkPath, viewModel.LinkTarget, viewModel.LinkHidden ?? false)).ConfigureAwait(false);
 
-            foreach(var tag in viewModel.TagsToRemove.Where(t => (t.ID ?? -1) != -1))
+            foreach(var tag in viewModel.TagsToRemove)
             {
-                response = await client.RemoveOpenGraphTagAsync(tag.ID ?? -1).ConfigureAwait(false);
+                if((tag.ID ?? -1) != -1)
+                    response = await client.RemoveOpenGraphTagAsync(tag.ID ?? -1).ConfigureAwait(false);
             }
 
-            foreach(var tag in viewModel.Tags.Where(t => (t.ID ?? -1) == -1)){
-                response = await client.AddOpenGraphTagAsync(new OpengraphTagToAdd(tag.LinkID, tag.Tag, tag.Content)).ConfigureAwait(false);
-            }
-
-            foreach (var tag in viewModel.Tags.Where(t => (t.ID ?? -1) != -1))
+            foreach (var tag in viewModel.Tags)
             {
-                response = await client.UpdateOpengraphTagAsync(tag).ConfigureAwait(false);
+                if((tag.ID ?? -1) == -1) // if id is null or -1 
+                    response = await client.AddOpenGraphTagAsync(new OpengraphTagToAdd(tag.LinkID, tag.Tag, tag.Content)).ConfigureAwait(false);
+                else
+                    response = await client.UpdateOpengraphTagAsync(tag).ConfigureAwait(false);
             }
 
 

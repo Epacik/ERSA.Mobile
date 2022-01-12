@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:ERSA.Mobile.Views.Models"
+             x:DataType="models:AddLinkViewModel"
+             x:Class="ERSA.Mobile.Views.AddLink">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0" Margin="10" VerticalOptions="Start">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Ścieżka"/>
+            <Entry Text="{Binding LinkPath}"
+               Grid.Column="1"/>
+
+            <Label Text="Cel"
+               Grid.Row="1"/>
+            <Entry Text="{Binding LinkTarget}"
+               Grid.Column="1"
+               Grid.Row="1"/>
+
+            <Label Text="Ukryj cel"
+               Grid.Row="2"/>
+            <Switch IsToggled="{Binding LinkHide}"
+                Grid.Column="1"
+                Grid.Row="2"/>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Text="Anuluj" x:Name="CancelButton" Clicked="CancelButton_Clicked"/>
+            <Button Text="Zapisz" x:Name="SaveButton" Clicked="SaveButton_Clicked" Grid.Column="1"/>
+        </Grid>
+    </Grid>
+</ContentView>

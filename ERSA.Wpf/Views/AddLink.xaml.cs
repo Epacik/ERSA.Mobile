@@ -33,7 +33,6 @@ namespace ERSA.Wpf.Views
         {
             if(MessageBox.Show("Czy na pewno chcesz anulować?", "Anuluj", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-
                 AddingCancelled?.Invoke(this, EventArgs.Empty);
                 viewModel.Clear();
             }

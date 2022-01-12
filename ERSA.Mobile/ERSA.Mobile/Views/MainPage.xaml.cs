@@ -10,20 +10,21 @@ namespace ERSA.Mobile.Views
 {
     public partial class MainPage : ContentPage
     {
+        Models.MainPageViewModel viewModel = new Models.MainPageViewModel();
         public MainPage()
         {
             Serilog.Log.Information("Initializing app");
+
+            BindingContext = viewModel;
             InitializeComponent();
-            if(Device.RuntimePlatform == Device.UWP)
-            {
-                UwpSearchBarHeader.Height = new GridLength(40);
-                
-            }
+            //if(Device.RuntimePlatform == Device.UWP)
+            //{
+            //    //UwpSearchBarHeader.Height = new GridLength(40);
+            //}
 
             _ = PrepareApiClient();
         }
 
-        bool preparingApi = true;
         private async Task PrepareApiClient()
         {
             if (!Preferences.ContainsKey(Constants.Preferences.ApiToken))
@@ -31,17 +32,16 @@ namespace ERSA.Mobile.Views
                 await AskForNewToken();
             }
 
-            var api = new AdminApi.Client(Preferences.Get(Constants.Preferences.ApiToken, null));
+            var client = new AdminApi.Client(Preferences.Get(Constants.Preferences.ApiToken, null));
              
-            if (!await api.TestConnectionAsync())
+            if (!await client.TestConnectionAsync())
             {
                 await AskForNewToken();
-                api = new AdminApi.Client(Preferences.Get(Constants.Preferences.ApiToken, null));
-                if (!await api.TestConnectionAsync())
+                client = new AdminApi.Client(Preferences.Get(Constants.Preferences.ApiToken, null));
+                if (!await client.TestConnectionAsync())
                     throw new InvalidOperationException();
             }
-            preparingApi = false;
-            PerformSearch();
+            LinkList.Prepared();
         }
 
         private async Task AskForNewToken()
@@ -55,38 +55,41 @@ namespace ERSA.Mobile.Views
             Preferences.Set(Constants.Preferences.ApiToken, result);
         }
 
+        internal void ShowList()
+        {
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                AddLink.IsVisible = false;
+                EditLink.IsVisible = false;
+                LinkList.IsVisible = true;
+            });
+        }
+
+        internal void ShowAddNew()
+        {
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                AddLink.IsVisible = true;
+                EditLink.IsVisible = false;
+                LinkList.IsVisible = false;
+            });
+            
+        }
+
+        internal void ShowEditLink()
+        {
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                AddLink.IsVisible = false;
+                EditLink.IsVisible = true;
+                LinkList.IsVisible = false;
+            });
+
+        }
+
         private void Entry_Unfocused(object sender, FocusEventArgs e)
         {
             //PerformSearch();
-        }
-
-        private void PerformSearch()
-        {
-            if (preparingApi)
-                return;
-
-            var searchString = SearchInput.Text;
-            if (Device.RuntimePlatform == Device.UWP)
-            {
-                searchString = SearchInputForUwp.Text;
-            }
-
-            new Task(async () =>
-            {
-                var api = new AdminApi.Client();
-                var data = await api.ListLinksAsync(searchString).ConfigureAwait(false);
-                if (data != null)
-                    Dispatcher.BeginInvokeOnMainThread(() =>
-                    {
-                        Items.Children.Clear();
-                        foreach(Link link in data)
-                        {
-                            var item = new Definitions.Controls.LinkListItem(link);
-                            item.Clicked += Item_Clicked;
-                            Items.Children.Add(item);
-                        }
-                    });
-            }).Start();
         }
 
         private async void Item_Clicked(object sender, EventArgs e)
@@ -98,15 +101,41 @@ namespace ERSA.Mobile.Views
             //await DisplayAlert(_sender.Link.Path, $"Id: {_sender.Link.Id}\nPath: {_sender.Link.Path}\nTarget: {_sender.Link.Target}\nHide: {_sender.Link.HideTarget == 1}", "Close");
         }
 
-        private void SearchInput_SearchButtonPressed(object sender, EventArgs e)
+        private void LinkList_AddNew(object sender, EventArgs e)
         {
-            PerformSearch();
+            AddLink.Clear();
+            ShowAddNew();
+
         }
 
-        private void RefreshView_Refreshing(object sender, EventArgs e)
+        private void LinkList_Edit(object sender, EditLinkEventArgs e)
         {
-            PerformSearch();
-            RefreshView.IsRefreshing = false;
+            EditLink.SetLink(e.LinkToEdit);
+            ShowEditLink();
         }
+
+        private async void LinkList_Delete(object sender, EventArgs e)
+        {
+            bool result = await DisplayAlert("Usuń", "Czy na pewno chcesz usunąć?", "Usuń", "Anuluj");
+        }
+
+        private void AddLink_Saved(object sender, EventArgs e)
+        {
+            ShowList();
+            LinkList.Refresh();
+        }
+
+        private void AddLink_Cancelled(object sender, EventArgs e)
+        {
+            ShowList();
+            LinkList.Refresh();
+        }
+
+        private async void AddLink_ErrorOccured(object sender, ErrorOccuredEventArgs e)
+        {
+            await DisplayAlert("Błąd dodawania linku", e.ErrorMessage, "ok");
+        }
+
+        
     }
 }

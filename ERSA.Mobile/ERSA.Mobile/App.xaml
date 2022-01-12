@@ -4,10 +4,5 @@
              x:Class="ERSA.Mobile.App"
              >
     <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="GlobalThemes/DarkTheme.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
     </Application.Resources>
 </Application>
